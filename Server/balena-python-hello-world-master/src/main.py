@@ -28,6 +28,16 @@ def thread_function(IP, PORT):
 def hello_world():
     return render_template('index.html')
 
+@app.route('/on')
+def turn_on():
+    # send TCP signal instructing client to turn off
+    return render_template('on.html')
+
+@app.route('/off')
+def turn_off():
+    # send TCP signal instructing client to turn off
+    return render_template('off.html')
+
 if __name__ == '__main__':
     IP = '196.24.166.233'
     PORT = 5005
