@@ -1,0 +1,7 @@
+Flask==0.12.3
+busio
+digitalio
+board
+adafruit_mcp3xxx.mcp3008
+adafruit_mcp3xxx.analog_in
+RPi.GPIO
