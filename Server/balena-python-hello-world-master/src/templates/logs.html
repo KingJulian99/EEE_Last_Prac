@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body style="background-color: rgb(38, 41, 48); color:rgb(50, 205, 240); text-align: center;">
+        <h1>Logs</h1>
+
+        <form action="/">
+            <label>Go back</label>
+            <input type="submit" value="🏡">
+        </form>
+
+        <br>
+
+        <table style="margin-left: auto; margin-right: auto;">
+            <tr>
+                <th>Time</th>
+                <th>Temperature</th>
+                <th>Brightness</th>
+            </tr>
+            {% for time, temp, bright in rows %}
+
+                <tr>
+                    <td>{{ time }}</td>
+                    <td>{{ temp }}</td>
+                    <td>{{ bright }}</td>
+                </tr>
+
+            {% endfor %}
+        </table>
+
+
+    </body>
+</html>

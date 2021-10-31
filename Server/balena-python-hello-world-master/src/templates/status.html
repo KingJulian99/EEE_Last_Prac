@@ -17,8 +17,8 @@
         
         
         <form action="/off">
-            <label style="color: blueviolet;">Sensor <span style="color: red;">Off</span> signal sent</label>
-            <input type="submit" value="👍" disabled>
+            <label>Turn sensor off</label>
+            <input type="submit" value="👍">
         </form>
         
         <br>
@@ -26,8 +26,20 @@
         
 
         <form action="/status">
+            {% if status %}
+
             <label>Get Status</label>
-          <input type="submit" value="👍">  
+            <input type="submit" value="👍">
+            <label>&nbsp; <span style="color: green;">Sampling</span></label>
+
+            {% else %}
+
+            <label>Get Status</label>
+            <input type="submit" value="👍">
+            <label>&nbsp; <span style="color: red;">Idle</span></label>
+
+            {% endif %}
+            
         </form>
         
         <br>
