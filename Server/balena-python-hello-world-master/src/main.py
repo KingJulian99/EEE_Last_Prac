@@ -14,11 +14,13 @@ def thread_function(IP, PORT):
     s.bind((IP, PORT))
     s.listen(1)
 
+    print('We are listening on ' + IP + ', port ' + PORT)
+
     while(True):
         client_socket, client_address = s.accept()
         print ('Connection established with: ', client_address)
         
-        client_socket.send(bytes("Aweeeeee Sebbie!", "utf-8"))
+        client_socket.send(bytes("You connected to the server", "utf-8"))
 
 # TCP METHODS
 def acquire_status_TCP(): #TODO
@@ -64,9 +66,8 @@ def download():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    IP = '196.24.166.233'
-    PORT = 5005
-    #ear = threading.Thread(target=thread_function, args=(IP, PORT), daemon=True)
-    #ear.start()
-    #app.run(host='0.0.0.0', port=80)
-    app.run()
+    ear = threading.Thread(target=thread_function, args=(socket.gethostname(), 5005), daemon=True)
+    ear.start()
+    
+    app.run(host='0.0.0.0', port=80, debug=False)
+    #app.run()
