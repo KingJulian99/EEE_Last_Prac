@@ -153,6 +153,7 @@ module CU (clk,rst, instr, result2, operand1, operand2, offset, opcode, sel1, se
                     w_r <= 0;
                 // STR X1, [X2, 20] means "Store X1 contents in memory address X2 + 20."
                 end else if (instruction[19:18] == 2'b11) begin //storeR
+                    regfile[instruction[17:16]] <= result2; // From data mem  
                     operand1 <= regfile[instruction[15:14]]; // X2
                     operand2 <= regfile[instruction[17:16]]; // z
                     offset <= instruction[11:4];
