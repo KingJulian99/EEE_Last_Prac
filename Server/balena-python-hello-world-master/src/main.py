@@ -7,14 +7,14 @@ app = Flask(__name__)
 rows = [('10:45:50','23.3C', '12.04'), ('10:46:0','23.3C', '12.01'), ('10:46:10','23.2C', '12.00')] # Holds sensor data, each item is a row tuple. 
 
 def thread_function(IP, PORT):
-    print("We are threading baby")
+    print("Attempting to listen on port " + str(PORT) + " address " + IP)
     BUFFER_SIZE = 512
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((IP, PORT))
     s.listen(1)
 
-    print('We are listening on ' + IP + ', port ' + PORT)
+    print('We are listening on ' + IP + ', port ' + str(PORT))
 
     while(True):
         client_socket, client_address = s.accept()
@@ -66,7 +66,7 @@ def download():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    ear = threading.Thread(target=thread_function, args=(socket.gethostname(), 5005), daemon=True)
+    ear = threading.Thread(target=thread_function, args=('192.168.1.235', 5005), daemon=True)
     ear.start()
     
     app.run(host='0.0.0.0', port=80, debug=False)
