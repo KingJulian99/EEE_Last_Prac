@@ -77,9 +77,10 @@ module CU (clk,rst, instr, result2, operand1, operand2, offset, opcode, sel1, se
                     sel3 <= 1; //pass offset
                     w_r <= 0;
                 // STR X1, [X2, 20] means "Store X1 contents in memory address X2 + 20."
+                // ALU sums operand 1 with the offset.
                 end else if (instruction[19:18] == 2'b11) begin //storeR 
                     operand1 <= regfile[instruction[15:14]]; // X2
-                    operand2 <= regfile[instruction[17:16]]; // z
+                    operand2 <= regfile[instruction[17:16]]; // X1
                     offset <= instruction[11:4];
                     opcode <= instruction[3:0];
                     sel1 <= 0;
@@ -108,9 +109,10 @@ module CU (clk,rst, instr, result2, operand1, operand2, offset, opcode, sel1, se
                     sel3 <= 1; //pass offset
                     w_r <= 0;
                 // STR X1, [X2, 20] means "Store X1 contents in memory address X2 + 20."
+                // ALU sums operand 1 with the offset.
                 end else if (instruction[19:18] == 2'b11) begin //storeR
                     operand1 <= regfile[instruction[15:14]]; // X2
-                    operand2 <= regfile[instruction[17:16]]; // z
+                    operand2 <= regfile[instruction[17:16]]; // X1
                     offset <= instruction[11:4];
                     opcode <= instruction[3:0];
                     sel1 <= 0;
@@ -129,9 +131,11 @@ module CU (clk,rst, instr, result2, operand1, operand2, offset, opcode, sel1, se
                     sel3 <= 1; //pass offset
                     w_r <= 0;
                 // STR X1, [X2, 20] means "Store X1 contents in memory address X2 + 20."
+                // ALU sums operand 1 with the offset.
                 end else if (instruction[19:18] == 2'b11) begin //storeR 
+                   state = DECODE;
                    operand1 <= regfile[instruction[15:14]]; // X2
-                   operand2 <= regfile[instruction[17:16]]; // z
+                   operand2 <= regfile[instruction[17:16]]; // X1
                    offset <= instruction[11:4];
                    opcode <= instruction[3:0];
                    sel1 <= 0;
@@ -152,11 +156,12 @@ module CU (clk,rst, instr, result2, operand1, operand2, offset, opcode, sel1, se
                     sel3 <= 0;
                     w_r <= 0;
                 // STR X1, [X2, 20] means "Store X1 contents in memory address X2 + 20."
+                // ALU sums operand 1 with the offset.
                 end else if (instruction[19:18] == 2'b11) begin //storeR
                     regfile[instruction[17:16]] <= result2; // From data mem  
                     operand1 <= regfile[instruction[15:14]]; // X2
-                    operand2 <= regfile[instruction[17:16]]; // z
-                    offset <= instruction[11:4];
+                    operand2 <= regfile[instruction[17:16]]; // x1
+                    offset <= instruction[11:4];    
                     opcode <= instruction[3:0];
                     sel1 <= 0;
                     sel3 <= 1;
