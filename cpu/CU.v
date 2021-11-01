@@ -76,13 +76,15 @@ module CU (clk,rst, instr, result2, operand1, operand2, offset, opcode, sel1, se
                     sel1 <= 0; //pass data_out
                     sel3 <= 1; //pass offset
                     w_r <= 0;
+                // STR X1, [X2, 20] means "Store X1 contents in memory address X2 + 20."
                 end else if (instruction[19:18] == 2'b11) begin //storeR 
-                   /******************************************** 
-                   *
-                   * FILL IN CORRECT CODE HERE
-                   *
-                   ********************************************/ 
-
+                    operand1 <= regfile[instruction[15:14]]; // X2
+                    operand2 <= regfile[instruction[17:16]]; // z
+                    offset <= instruction[11:4];
+                    opcode <= instruction[3:0];
+                    sel1 <= 0;
+                    sel3 <= 1;
+                    w_r <= 0;
                 end
             end
             EXECUTE: begin //#2
@@ -105,12 +107,15 @@ module CU (clk,rst, instr, result2, operand1, operand2, offset, opcode, sel1, se
                     sel1 <= 0; //pass data_out
                     sel3 <= 1; //pass offset
                     w_r <= 0;
+                // STR X1, [X2, 20] means "Store X1 contents in memory address X2 + 20."
                 end else if (instruction[19:18] == 2'b11) begin //storeR
-                   /******************************************** 
-                   *
-                   * FILL IN CORRECT CODE HERE
-                   *
-                   ********************************************/ 
+                    operand1 <= regfile[instruction[15:14]]; // X2
+                    operand2 <= regfile[instruction[17:16]]; // z
+                    offset <= instruction[11:4];
+                    opcode <= instruction[3:0];
+                    sel1 <= 0;
+                    sel3 <= 1;
+                    w_r <= 1;
                 end
             end
             MEM_ACCESS: begin //#3
@@ -123,14 +128,15 @@ module CU (clk,rst, instr, result2, operand1, operand2, offset, opcode, sel1, se
                     sel1 <= 0; //pass data_out
                     sel3 <= 1; //pass offset
                     w_r <= 0;
+                // STR X1, [X2, 20] means "Store X1 contents in memory address X2 + 20."
                 end else if (instruction[19:18] == 2'b11) begin //storeR 
-                   /******************************************** 
-                   *
-                   * FILL IN CORRECT CODE HERE
-                   * Take note of what the next state should be according to
-                   * the FSM
-                   *
-                   ********************************************/ 
+                   operand1 <= regfile[instruction[15:14]]; // X2
+                   operand2 <= regfile[instruction[17:16]]; // z
+                   offset <= instruction[11:4];
+                   opcode <= instruction[3:0];
+                   sel1 <= 0;
+                   sel3 <= 1;
+                   w_r <= 0;
                 end
             end
             WRITE_BACK: begin //#4
@@ -145,13 +151,15 @@ module CU (clk,rst, instr, result2, operand1, operand2, offset, opcode, sel1, se
                     sel1 <= 1;
                     sel3 <= 0;
                     w_r <= 0;
-                end else if (instruction[19:18] == 2'b11) begin //storeR 
-                   /******************************************** 
-                   *
-                   * FILL IN CORRECT CODE HERE
-                   *
-                   ********************************************/ 
-                    
+                // STR X1, [X2, 20] means "Store X1 contents in memory address X2 + 20."
+                end else if (instruction[19:18] == 2'b11) begin //storeR
+                    operand1 <= regfile[instruction[15:14]]; // X2
+                    operand2 <= regfile[instruction[17:16]]; // z
+                    offset <= instruction[11:4];
+                    opcode <= instruction[3:0];
+                    sel1 <= 0;
+                    sel3 <= 1;
+                    w_r <= 1;
                 end else if (instruction[19:18] == 2'b10) begin //loadR             
                     regfile[instruction[17:16]] <= result2; //From data mem
                     operand1 <= regfile[instruction[15:14]]; //X2
