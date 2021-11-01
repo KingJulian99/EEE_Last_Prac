@@ -1,4 +1,7 @@
-'timescale 1ns / 1ps;
+`timescale 1ns / 1ps;
+`include "CU.v"
+`include "RegMem.v"
+`include "alu.v"
 
 module simple_cpu(
     clk, 

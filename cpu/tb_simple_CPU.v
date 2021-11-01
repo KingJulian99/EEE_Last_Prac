@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
- 
+`
+
 module tb_simple_CPU;
        
     parameter DATA_WIDTH = 8; //8 bit wide data
