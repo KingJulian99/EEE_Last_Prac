@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps;
+//`timescale 1ns / 1ps;
 `include "CU.v"
 `include "RegMem.v"
 `include "alu.v"
@@ -21,6 +21,11 @@ module simple_cpu(
     wire [DATA_WIDTH-1:0] offset_i;
     wire sel1_i, sel3_i;
     wire [DATA_WIDTH-1:0] operand_1_i, operand_2_i;
+  	wire [DATA_WIDTH-1:0] rf0_i;
+  	wire [DATA_WIDTH-1:0] rf1_i;
+  	wire [DATA_WIDTH-1:0] rf2_i;
+  	wire [DATA_WIDTH-1:0] rf3_i;
+
 
     // Data memory wires
     wire [ADDR_BITS-1:0] addr_i;
@@ -32,29 +37,38 @@ module simple_cpu(
     wire [3:0] opcode_i;
 
     // Instantiating the CU, data memory & ALU.
-    CU  #(DATA_WIDTH,ADDR_BITS, INSTR_WIDTH) CU1(clk, rst, instruction, result2_i, operand_1_i, operand_2_i, offset_i, opcode_i, sel1_i, sel3_i, wen_i);
+    CU  #(DATA_WIDTH,ADDR_BITS, INSTR_WIDTH) CU1(clk, rst, instruction, result2_i, operand_1_i, operand_2_i, offset_i, opcode_i, sel1_i, sel3_i, wen_i, rf0_i, rf1_i, rf2_i, rf3_i);
     reg_mem  #(DATA_WIDTH,ADDR_BITS) data_memory(addr_i, data_in_i, wen_i, clk, data_out_i);
     alu #(DATA_WIDTH) alu1 (clk, operand_a_i, operand_b_i, opcode_i, result1_i);
 
     //Connecting the CU to the ALU
     assign operand_a_i = operand_1_i;
-    if (sel3_i == 0) begin
+    /*if (sel3_i == 0) begin
       assign operand_b_i = operand_2_i;
     end else if (sel3_i == 1) begin
       assign operand_b_i = offset_i;
     end else begin
       assign operand_b_i = 8'bx;
-    end
+    end*/
+  // Above didn;t work so ending up using ternary operators.
+    assign operand_b_i = (sel3_i == 0) ? operand_2_i : (sel3_i == 1) ? offset_i : 8'bx;
+
     
     //Connecting the CU to the Memory
     assign data_in_i = operand_2_i;
     assign addr_i = result1_i; 
     
     //Connecting the datamem to the CU
-    if (sel1_i == 0) begin
+    /*if (sel1_i == 0) begin
       assign result2_i = data_out_i;
     end else if (sel1_i == 1) begin
       assign result2_i = result1_i;
     end else begin
       assign result2_i = 8'bx;
-    end
+    end*/
+    // Above didn;t work so ending up using ternary operators.
+  	assign result2_i = (sel1_i == 0) ? data_out_i : (sel1_i == 1) ? result1_i : 8'bx;
+
+
+  
+endmodule

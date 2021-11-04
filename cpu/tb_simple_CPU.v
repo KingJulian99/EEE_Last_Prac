@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-`
 
 module tb_simple_CPU;
        
@@ -14,6 +13,8 @@ module tb_simple_CPU;
     simple_cpu  #(DATA_WIDTH,ADDR_BITS,INSTR_WIDTH) SCPU_DUT(clk, rst, instruction);
     
     initial begin
+      $dumpfile("dumptruck.vcd");
+        $dumpvars;
         clk = 1'b1;
         rst = 1'b1;
         instruction = 20'd0;
@@ -57,8 +58,13 @@ module tb_simple_CPU;
         instruction = 20'b10111000000011110000;
         repeat(7) #1 clk=!clk;
         
-        
+      // LOAD_R: DATA_MEM(reg3 + 22) = reg0//reg0 = DATA_MEM(7+22)
+      	//Additional load instruction
+      	instruction = 20'b10001100000101100000;
+        repeat(7) #1 clk=!clk;
+      
     end
     
     
 endmodule
+
