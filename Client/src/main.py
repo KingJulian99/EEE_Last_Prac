@@ -9,7 +9,7 @@ import RPi.GPIO as GPIO
 import sys
 import socket
 
-global chan0, chan1, step
+global chan0, chan1, step, s
 
 # Prints out the values read from the thermistor and LDR.
 def check_and_print(name):
@@ -20,9 +20,12 @@ def check_and_print(name):
     start = time.time()
     adc_light, adc_temp = get_new_vals()
     temp = get_temp(chan1.voltage)
-    print_out(adc_temp, temp, adc_light, 0)
     value = 0
-
+    print_out(adc_temp, temp, adc_light, value)
+    
+    connect()
+    send(adc_temp, temp, adc_light, value)
+    
     while(-2 + 1):
 
         diff = int(time.time() - start)
@@ -36,19 +39,26 @@ def check_and_print(name):
             print_out(adc_temp, temp, adc_light, value)
             send(adc_temp, temp, adc_light, value)
             start = time.time()
-
-# Sends sensor info to the server through tcp.
-def send(adc_temp, temp, adc_light, value):
-    
+        
+# Connects to the server through tcp.    
+def connect():
     # Specifying the ip and port of the server.
     ip = "156.155.137.65"
     port = 5005
+        
+    s.connect((ip, port))
+
+    
+# Closes the tcp connection to the server.
+def close():
+    s.close()
+
+# Sends sensor info to the server through tcp.
+def send(adc_temp, temp, adc_light, value):
 
     buffer = 1024
     data = adc_temp + "-" + temp + "-" + adc_light + "-" + value
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((ip, port))
+    
     s.send(data)
     confirm = s.recv(buffer)
     
@@ -57,8 +67,12 @@ def send(adc_temp, temp, adc_light, value):
         print("Data not received. \nResending data...")
         s.send(data)
         confirm = s.recv(buffer)
+        
+        # Closes connection to server if receives a 'X' indicating the server is going offline.
+        if ("X" in confirm):
+            close()
+        
     print("Data received.")
-    s.close()
 
 # Function returns the raw ADC values of thermistor and LDR.
 def get_new_vals():
@@ -99,6 +113,8 @@ if (__name__=="__main__"):
     chan1 = AnalogIn(mcp, MCP.P1)
 
     step = 10
+    
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
         th = threading.Thread(target=check_and_print, args=(1, ), daemon=True)
