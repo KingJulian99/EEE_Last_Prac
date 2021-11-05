@@ -58,6 +58,7 @@ def send(adc_temp, temp, adc_light, value):
         s.send(data)
         confirm = s.recv(buffer)
     print("Data received.")
+    s.close()
 
 # Function returns the raw ADC values of thermistor and LDR.
 def get_new_vals():
