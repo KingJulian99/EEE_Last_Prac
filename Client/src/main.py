@@ -69,15 +69,22 @@ def send(adc_temp, temp, adc_light, value):
     
     # Checking whether the server received the message or not.
     while ("Y" not in confirm):
-        print("Data not received. \nResending data...")
-        s.send(data)
-        confirm = s.recv(buffer)
         
         # Closes connection to server if receives a 'X' indicating the server is going offline.
         if ("X" in confirm):
             close()
-        if (confirm == 0):
+        elif (confirm == 0):
             status = 0
+        elif ("S" in confirm):
+            if (status == 1):
+                s.send("ON")
+            else:
+                s.send("OFF")
+        else:
+            print("Data not received. \nResending data...")
+            s.send(data)
+            confirm = s.recv(buffer)
+            
         
     print("Data received.")
 
