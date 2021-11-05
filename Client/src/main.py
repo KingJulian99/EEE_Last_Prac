@@ -9,11 +9,12 @@ import RPi.GPIO as GPIO
 import sys
 import socket
 
-global chan0, chan1, step, s
+global chan0, chan1, step, s, status
 
 # Prints out the values read from the thermistor and LDR.
 def check_and_print(name):
-    global chan1, step
+    global chan1, step, status
+    status = 1
 
     print("Runtime\t\tTemp Reading\t\tTemp\t\tLight Reading")
 
@@ -22,11 +23,10 @@ def check_and_print(name):
     temp = get_temp(chan1.voltage)
     value = 0
     print_out(adc_temp, temp, adc_light, value)
-    
-    connect()
+
     send(adc_temp, temp, adc_light, value)
     
-    while(-2 + 1):
+    while(status == 1):
 
         diff = int(time.time() - start)
 
@@ -47,6 +47,11 @@ def connect():
     port = 5005
         
     s.connect((ip, port))
+    message = s.recv(1024)
+    
+    while (message != 1):
+        continue
+    check_and_print()
 
     
 # Closes the tcp connection to the server.
@@ -71,6 +76,8 @@ def send(adc_temp, temp, adc_light, value):
         # Closes connection to server if receives a 'X' indicating the server is going offline.
         if ("X" in confirm):
             close()
+        if (confirm == 0):
+            status = 0
         
     print("Data received.")
 
@@ -115,10 +122,12 @@ if (__name__=="__main__"):
     step = 10
     
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    status = 0
 
     try:
-        th = threading.Thread(target=check_and_print, args=(1, ), daemon=True)
+        th = threading.Thread(target=connect, args=(1, ), daemon=True)
         th.start()
         th.join()
     finally:
+        close()
         GPIO.cleanup()
